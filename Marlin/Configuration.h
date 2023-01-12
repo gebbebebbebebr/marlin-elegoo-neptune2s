@@ -1264,7 +1264,7 @@
 #elif ENABLED(IS_3)
   #define DEFAULT_MAX_FEEDRATE          { 200, 200, 6, 70 }
 #else
-  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 3, 70 }
+  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 10, 70 }
 #endif
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
@@ -1604,7 +1604,7 @@
 
 // X and Y axis travel speed (mm/min) between probes
 #if ENABLED(IS_3)
-  #define XY_PROBE_FEEDRATE (40*60)
+  #define XY_PROBE_FEEDRATE (80*60)
 #else
   #define XY_PROBE_FEEDRATE (4000)
 #endif
@@ -1613,7 +1613,7 @@
 #if ENABLED(IS_3)
   #define Z_PROBE_FEEDRATE_FAST (0.8*60)
 #else
-  #define Z_PROBE_FEEDRATE_FAST (3*60)
+  #define Z_PROBE_FEEDRATE_FAST (10*60)
 #endif
 
 // Feedrate (mm/min) for the "accurate" probe of each point
@@ -1668,7 +1668,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#define MULTIPLE_PROBING 2
+//#define MULTIPLE_PROBING 2
 //#define EXTRA_PROBING    1
 
 /**
@@ -1685,13 +1685,13 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_DEPLOY_PROBE   5 // Z Clearance for Deploy/Stow
 #if ENABLED(IS_3)
   #define Z_CLEARANCE_BETWEEN_PROBES  3 // Z Clearance between probe points
   #define Z_CLEARANCE_MULTI_PROBE     2 // Z Clearance between multiple probes
 #else  
-  #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
-  #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
+  #define Z_CLEARANCE_BETWEEN_PROBES  3 // Z Clearance between probe points
+  #define Z_CLEARANCE_MULTI_PROBE     3 // Z Clearance between multiple probes
 #endif
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
@@ -2126,7 +2126,7 @@
 
     // Beyond the probed grid, continue the implied tilt?
     // Default is to maintain the height of the nearest edge.
-    //#define EXTRAPOLATE_BEYOND_GRID
+    #define EXTRAPOLATE_BEYOND_GRID
 
     //
     // Experimental Subdivision of the grid by Catmull-Rom method.
