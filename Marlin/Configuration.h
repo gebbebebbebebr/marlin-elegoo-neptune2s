@@ -65,11 +65,11 @@
 
 // MAIN CONFIGURATION SWITCHES FOR FEATURES - see readme.md for more details.
 // ctrl+/ with your cursor on a line will comment / uncomment that line.
-// #define IS_BOARD_1_3              // uncomment if you have the 1.3 board, commented out for 1.2 board Be sure to change default_envs in PlatformIO.ini
-// #define HAS_BLTOUCH               // uncomment if you have a BLTouch or clone
+#define IS_BOARD_1_3              // uncomment if you have the 1.3 board, commented out for 1.2 board Be sure to change default_envs in PlatformIO.ini
+#define HAS_BLTOUCH               // uncomment if you have a BLTouch or clone
 // #define IS_2D                     // uncomment if you have a Neptune 2D (Dual extruder)
-// #define IS_2S					           // uncomment if you have a Neptune 2S (Always a 1.3 board) //mlee12382
-#define IS_X                      // BROKEN uncomment if you have a Neptune X make sure IS_BOARD_1_3 is commented and set platformio.ini to mks_neptune_x
+#define IS_2S					           // uncomment if you have a Neptune 2S (Always a 1.3 board) //mlee12382
+// #define IS_X                      // BROKEN uncomment if you have a Neptune X make sure IS_BOARD_1_3 is commented and set platformio.ini to mks_neptune_x
 // #define HAS_WIFI                  // uncomment if you have WIFI works with LVGL only NOT ColorUI //mlee12382
 #define IS_COLORUI                // uncomment if you want to use ColorUI which has more settings available from the touch screen but no WIFI or Thumbnail support  //mlee12382
 // #define IS_3                      // uncomment if you have a Neptune 3
@@ -2276,7 +2276,7 @@
 #if ENABLED(IS_3)
   #define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (6*60) }
 #else
-  #define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (10*60) }
+  #define HOMING_FEEDRATE_MM_M { (75*60), (75*60), (10*60) }
 #endif
 
 // Validate that endstops are triggered on homing moves
@@ -3375,7 +3375,7 @@
   #define BUTTON_DELAY_EDIT  50 // (ms) Button repeat delay for edit screens
   #define BUTTON_DELAY_MENU 250 // (ms) Button repeat delay for menus
 
-  //#define TOUCH_IDLE_SLEEP 300 // (s) Turn off the TFT backlight if set (5mn)
+  #define TOUCH_IDLE_SLEEP 300 // (s) Turn off the TFT backlight if set (5mn)
 
   #define TOUCH_SCREEN_CALIBRATION
 

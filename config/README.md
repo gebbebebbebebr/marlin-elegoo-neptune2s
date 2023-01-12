@@ -102,6 +102,8 @@ NOTE: I recommend you use an sd card 8GB or less Formatted as FAT32 for installi
 
 ### Adjust ESTEPS.
 
+NOTE: If you have a Neptune 2s or Neptune 2d and have not calibrated your ESTEPS, you can skip this section.
+
 1. From the main screen click on *settings icon -> Configuration -> Advanced Settings -> Steps/mm -> E steps/mm
 2. Set the default value of 90 (Elegoo Neptune 2 defaults) OR the value you have tuned for your printer.
 3. Click the checkmark.
