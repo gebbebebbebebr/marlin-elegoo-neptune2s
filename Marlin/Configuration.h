@@ -2113,7 +2113,7 @@
   #if ENABLED(IS_3)
     #define GRID_MAX_POINTS_X 4
   #else
-    #define GRID_MAX_POINTS_X 5
+    #define GRID_MAX_POINTS_X 7
   #endif
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
