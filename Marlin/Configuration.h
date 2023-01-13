@@ -1264,7 +1264,7 @@
 #elif ENABLED(IS_3)
   #define DEFAULT_MAX_FEEDRATE          { 200, 200, 6, 70 }
 #else
-  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 10, 70 }
+  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 6, 70 }
 #endif
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
@@ -1613,7 +1613,7 @@
 #if ENABLED(IS_3)
   #define Z_PROBE_FEEDRATE_FAST (0.8*60)
 #else
-  #define Z_PROBE_FEEDRATE_FAST (10*60)
+  #define Z_PROBE_FEEDRATE_FAST (6*60)
 #endif
 
 // Feedrate (mm/min) for the "accurate" probe of each point
@@ -2050,7 +2050,7 @@
   #if NONE(NO_NOZZLE_PREHEAT)
     #define LEVELING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
   #endif
-  #define LEVELING_BED_TEMP     65
+  #define LEVELING_BED_TEMP     60
 #endif
 
 /**
@@ -2113,7 +2113,7 @@
   #if ENABLED(IS_3)
     #define GRID_MAX_POINTS_X 4
   #else
-    #define GRID_MAX_POINTS_X 7
+    #define GRID_MAX_POINTS_X 5
   #endif
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
