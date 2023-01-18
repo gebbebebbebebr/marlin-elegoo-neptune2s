@@ -1668,7 +1668,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-//#define MULTIPLE_PROBING 2
+#define MULTIPLE_PROBING 2
 //#define EXTRA_PROBING    1
 
 /**
@@ -2113,10 +2113,10 @@
   #if ENABLED(IS_3)
     #define GRID_MAX_POINTS_X 4
   #else
-    #define GRID_MAX_POINTS_X 5
+    #define GRID_MAX_POINTS_X 7
   #endif
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
-
+ 
   // Probe along the Y axis, advancing X after each column
   #if ENABLED(IS_3)
     #define PROBE_Y_FIRST
