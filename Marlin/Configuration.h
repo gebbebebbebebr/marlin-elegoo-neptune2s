@@ -1264,7 +1264,7 @@
 #elif ENABLED(IS_3)
   #define DEFAULT_MAX_FEEDRATE          { 200, 200, 6, 70 }
 #else
-  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 6, 70 }
+  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 10, 70 }
 #endif
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
@@ -1668,7 +1668,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#define MULTIPLE_PROBING 2
+//#define MULTIPLE_PROBING 2
 //#define EXTRA_PROBING    1
 
 /**
@@ -2276,7 +2276,7 @@
 #if ENABLED(IS_3)
   #define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (6*60) }
 #else
-  #define HOMING_FEEDRATE_MM_M { (100*60), (100*60), (10*60) }
+  #define HOMING_FEEDRATE_MM_M { (75*60), (75*60), (10*60) }
 #endif
 
 // Validate that endstops are triggered on homing moves
