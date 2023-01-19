@@ -1606,14 +1606,14 @@
 #if ENABLED(IS_3)
   #define XY_PROBE_FEEDRATE (80*60)
 #else
-  #define XY_PROBE_FEEDRATE (4000)
+  #define XY_PROBE_FEEDRATE (150*60)
 #endif
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #if ENABLED(IS_3)
   #define Z_PROBE_FEEDRATE_FAST (0.8*60)
 #else
-  #define Z_PROBE_FEEDRATE_FAST (6*60)
+  #define Z_PROBE_FEEDRATE_FAST (10*60)
 #endif
 
 // Feedrate (mm/min) for the "accurate" probe of each point
@@ -2113,7 +2113,7 @@
   #if ENABLED(IS_3)
     #define GRID_MAX_POINTS_X 4
   #else
-    #define GRID_MAX_POINTS_X 7
+    #define GRID_MAX_POINTS_X 5
   #endif
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
  
@@ -2276,7 +2276,7 @@
 #if ENABLED(IS_3)
   #define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (6*60) }
 #else
-  #define HOMING_FEEDRATE_MM_M { (75*60), (75*60), (10*60) }
+  #define HOMING_FEEDRATE_MM_M { (100*60), (100*60), (10*60) }
 #endif
 
 // Validate that endstops are triggered on homing moves
