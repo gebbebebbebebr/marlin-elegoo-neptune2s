@@ -1613,7 +1613,7 @@
 #if ENABLED(IS_3)
   #define Z_PROBE_FEEDRATE_FAST (0.8*60)
 #else
-  #define Z_PROBE_FEEDRATE_FAST (10*60)
+  #define Z_PROBE_FEEDRATE_FAST (8*60)
 #endif
 
 // Feedrate (mm/min) for the "accurate" probe of each point
@@ -1695,7 +1695,7 @@
 #endif
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -5 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -3 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
@@ -2029,7 +2029,7 @@
 //#define AUTO_BED_LEVELING_LINEAR
 //#define AUTO_BED_LEVELING_UBL
 #if EITHER(HAS_BLTOUCH, IS_3)
-  #define AUTO_BED_LEVELING_BILINEAR
+  #define AUTO_BED_LEVELING_UBL
 #else
   #define MESH_BED_LEVELING
 #endif
