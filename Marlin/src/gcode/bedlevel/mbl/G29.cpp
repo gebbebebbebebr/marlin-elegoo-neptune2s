@@ -108,7 +108,9 @@ void GcodeSuite::G29() {
         TERN_(DWIN_LCD_PROUI, DWIN_LevelingStart());
 
         // Position bed horizontally and Z probe vertically.
-        #if HAS_SAFE_BED_LEVELING
+        #if    defined(SAFE_BED_LEVELING_START_X) || defined(SAFE_BED_LEVELING_START_Y) || defined(SAFE_BED_LEVELING_START_Z) \
+            || defined(SAFE_BED_LEVELING_START_I) || defined(SAFE_BED_LEVELING_START_J) || defined(SAFE_BED_LEVELING_START_K) \
+            || defined(SAFE_BED_LEVELING_START_U) || defined(SAFE_BED_LEVELING_START_V) || defined(SAFE_BED_LEVELING_START_W)
           xyze_pos_t safe_position = current_position;
           #ifdef SAFE_BED_LEVELING_START_X
             safe_position.x = SAFE_BED_LEVELING_START_X;
@@ -139,7 +141,7 @@ void GcodeSuite::G29() {
           #endif
 
           do_blocking_move_to(safe_position);
-        #endif // HAS_SAFE_BED_LEVELING
+        #endif
 
         return;
       }

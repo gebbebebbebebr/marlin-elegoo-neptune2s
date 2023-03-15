@@ -1,0 +1,35 @@
+20220616：
+增加调平温度设置项，可以在设置中自定义调平温度。
+
+
+提醒：
+如果出现调平失败或回原点失败问题，请尝试重启电源或在设置中选择恢复出厂设置。恢复出厂设置后会清除调平网格数据，必须重新调平。
+
+调平温度建议:   
+热端温度：0 ℃   （ 为了避免风扇转动以及温度影响调平精度  ）
+热床温度：材料需要的温度＋5 ℃    （避免因热床受热变形影响调平效果）   
+
+目前在打印过程中的设置的Z-offset值不会保存至EEPROM（关机或断电后Z-offset数据会丢失，下次打印时还需要再次调整Z-offset）。
+解决方法：可以在打印完成或取消打印后在【设置】→【温度】→ 【调平温度】点击右上角【保存】来保存EEPROM，这样设置的Z-offset就
+会保存至EEPROM。
+
+
+
+
+20220616：
+Added the setting item of leveling temperature. You can customize the leveling temperature in the Settings.
+
+
+
+remind:
+If the leveling fails or the homing fails, please try to restart the power or choose to restore the factory settings in the settings. 
+The leveling grid data will be cleared after a factory reset and must be re-leveled.
+
+Leveling Temperature Recommendations:
+Hot end temperature: 0 ℃ (in order to avoid fan rotation and temperature affecting the leveling accuracy)
+Hot bed temperature: the temperature required by the filament +5 °C (to avoid the leveling effect due to the thermal deformation of the hot bed)
+
+ At present, the Z-offset value set during printing will not be saved to EEPROM (Z-offset data will be lost after
+ power off or power failure, and Z-offset needs to be adjusted again when printing next time). Solution: You can save 
+the EEPROM by heading to 【Settings】 → 【Temperature】 → 【Leveling Temperature】, clicking 【Save】 in the upper 
+right corner of after printing is completed or canceled, so that the set Z-offset will be saved to the EEPROM.

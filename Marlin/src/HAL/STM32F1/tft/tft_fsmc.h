@@ -33,10 +33,6 @@
 #define DATASIZE_8BIT  DMA_SIZE_8BITS
 #define DATASIZE_16BIT DMA_SIZE_16BITS
 #define TFT_IO_DRIVER  TFT_FSMC
-#define DMA_MAX_SIZE   0xFFFF
-
-#define DMA_PINC_ENABLE   DMA_PINC_MODE
-#define DMA_PINC_DISABLE  0
 
 typedef struct {
   __IO uint16_t REG;
@@ -49,7 +45,6 @@ class TFT_FSMC {
 
     static uint32_t ReadID(uint16_t Reg);
     static void Transmit(uint16_t Data);
-    static void Transmit(uint32_t MemoryIncrease, uint16_t *Data, uint16_t Count);
     static void TransmitDMA(uint32_t MemoryIncrease, uint16_t *Data, uint16_t Count);
 
   public:
@@ -64,14 +59,13 @@ class TFT_FSMC {
     static void WriteData(uint16_t Data) { Transmit(Data); }
     static void WriteReg(uint16_t Reg);
 
-    static void WriteSequence_DMA(uint16_t *Data, uint16_t Count) { TransmitDMA(DMA_PINC_ENABLE, Data, Count); }
-    static void WriteMultiple_DMA(uint16_t Color, uint16_t Count) { static uint16_t Data; Data = Color; TransmitDMA(DMA_PINC_DISABLE, &Data, Count); }
-
-    static void WriteSequence(uint16_t *Data, uint16_t Count) { Transmit(DMA_PINC_ENABLE, Data, Count); }
+    static void WriteSequence(uint16_t *Data, uint16_t Count) { TransmitDMA(DMA_PINC_MODE, Data, Count); }
+    static void WriteMultiple(uint16_t Color, uint16_t Count) { static uint16_t Data; Data = Color; TransmitDMA(DMA_CIRC_MODE, &Data, Count); }
     static void WriteMultiple(uint16_t Color, uint32_t Count) {
+      static uint16_t Data; Data = Color;
       while (Count > 0) {
-        Transmit(DMA_PINC_DISABLE, &Color, Count > DMA_MAX_SIZE ? DMA_MAX_SIZE : Count);
-        Count = Count > DMA_MAX_SIZE ? Count - DMA_MAX_SIZE : 0;
+        TransmitDMA(DMA_CIRC_MODE, &Data, Count > 0xFFFF ? 0xFFFF : Count);
+        Count = Count > 0xFFFF ? Count - 0xFFFF : 0;
       }
     }
 };

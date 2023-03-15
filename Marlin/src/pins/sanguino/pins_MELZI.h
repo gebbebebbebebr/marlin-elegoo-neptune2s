@@ -31,10 +31,6 @@
 
 #define IS_MELZI 1
 
-#ifndef FAN_PIN
-  #define FAN_PIN                              4
-#endif
-
 // Alter timing for graphical display
 #if IS_U8GLIB_ST7920
   #ifndef BOARD_ST7920_DELAY_1

@@ -323,9 +323,6 @@
     #define BTN_EN1                  EXP2_03_PIN
     #define BTN_ENC                  EXP1_02_PIN
 
-    #define BEEPER_PIN               EXP1_01_PIN
-    #define SDCARD_CONNECTION            ONBOARD
-
     #define TOUCH_BUTTONS_HW_SPI
     #define TOUCH_BUTTONS_HW_SPI_DEVICE        1
 
@@ -426,7 +423,6 @@
         #define DOGLCD_A0            EXP1_07_PIN
         #define DOGLCD_SCK           EXP2_02_PIN
         #define DOGLCD_MOSI          EXP2_06_PIN
-        #define FORCE_SOFT_SPI
 
       #elif ENABLED(ENDER2_STOCKDISPLAY)
 

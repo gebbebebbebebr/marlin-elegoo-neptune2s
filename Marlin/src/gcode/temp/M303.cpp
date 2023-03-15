@@ -61,14 +61,20 @@ void GcodeSuite::M303() {
   const heater_id_t hid = (heater_id_t)parser.intval('E');
   celsius_t default_temp;
   switch (hid) {
-    OPTCODE(PIDTEMP,        case 0 ... HOTENDS - 1: default_temp = PREHEAT_1_TEMP_HOTEND;  break)
-    OPTCODE(PIDTEMPBED,     case H_BED:             default_temp = PREHEAT_1_TEMP_BED;     break)
-    OPTCODE(PIDTEMPCHAMBER, case H_CHAMBER:         default_temp = PREHEAT_1_TEMP_CHAMBER; break)
+    #if ENABLED(PIDTEMP)
+      case 0 ... HOTENDS - 1: default_temp = PREHEAT_1_TEMP_HOTEND; break;
+    #endif
+    #if ENABLED(PIDTEMPBED)
+      case H_BED: default_temp = PREHEAT_1_TEMP_BED; break;
+    #endif
+    #if ENABLED(PIDTEMPCHAMBER)
+      case H_CHAMBER: default_temp = PREHEAT_1_TEMP_CHAMBER; break;
+    #endif
     default:
       SERIAL_ECHOPGM(STR_PID_AUTOTUNE);
       SERIAL_ECHOLNPGM(STR_PID_BAD_HEATER_ID);
-      TERN_(EXTENSIBLE_UI, ExtUI::onPidTuning(ExtUI::result_t::PID_BAD_HEATER_ID));
-      TERN_(DWIN_PID_TUNE, DWIN_PidTuning(PID_BAD_HEATER_ID));
+      TERN_(EXTENSIBLE_UI, ExtUI::onPidTuning(ExtUI::result_t::PID_BAD_EXTRUDER_NUM));
+      TERN_(DWIN_LCD_PROUI, DWIN_PidTuning(PID_BAD_EXTRUDER_NUM));
       return;
   }
 
@@ -78,9 +84,14 @@ void GcodeSuite::M303() {
   const celsius_t temp = seenS ? parser.value_celsius() : default_temp;
   const bool u = parser.boolval('U');
 
-  TERN_(DWIN_PID_TUNE, DWIN_StartM303(seenC, c, seenS, hid, temp));
+  #if ENABLED(DWIN_LCD_PROUI)
+    if (seenC) HMI_data.PidCycles = c;
+    if (seenS) { if (hid == H_BED) HMI_data.BedPidT = temp; else HMI_data.HotendPidT = temp; }
+  #endif
 
-  IF_DISABLED(BUSY_WHILE_HEATING, KEEPALIVE_STATE(NOT_BUSY));
+  #if DISABLED(BUSY_WHILE_HEATING)
+    KEEPALIVE_STATE(NOT_BUSY);
+  #endif
 
   LCD_MESSAGE(MSG_PID_AUTOTUNE);
   thermalManager.PID_autotune(temp, hid, c, u);

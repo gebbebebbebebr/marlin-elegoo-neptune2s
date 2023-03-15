@@ -691,9 +691,15 @@ void __O2 Endstops::report_states() {
 
 } // Endstops::report_states
 
-#define __ENDSTOP(AXIS, MINMAX) AXIS ##_## MINMAX
-#define _ENDSTOP_PIN(AXIS, MINMAX) AXIS ##_## MINMAX ##_PIN
-#define _ENDSTOP_INVERTING(AXIS, MINMAX) AXIS ##_## MINMAX ##_ENDSTOP_INVERTING
+#if HAS_DELTA_SENSORLESS_PROBING
+  #define __ENDSTOP(AXIS, ...) AXIS ##_MAX
+  #define _ENDSTOP_PIN(AXIS, ...) AXIS ##_MAX_PIN
+  #define _ENDSTOP_INVERTING(AXIS, ...) AXIS ##_MAX_ENDSTOP_INVERTING
+#else
+  #define __ENDSTOP(AXIS, MINMAX) AXIS ##_## MINMAX
+  #define _ENDSTOP_PIN(AXIS, MINMAX) AXIS ##_## MINMAX ##_PIN
+  #define _ENDSTOP_INVERTING(AXIS, MINMAX) AXIS ##_## MINMAX ##_ENDSTOP_INVERTING
+#endif
 #define _ENDSTOP(AXIS, MINMAX) __ENDSTOP(AXIS, MINMAX)
 
 /**
@@ -1330,54 +1336,75 @@ void Endstops::update() {
     bool hit = false;
     #if X_SPI_SENSORLESS
       if (tmc_spi_homing.x && (stepperX.test_stall_status()
-        #if Y_SPI_SENSORLESS && ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX)
+        #if ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX) && Y_SPI_SENSORLESS
           || stepperY.test_stall_status()
-        #elif Z_SPI_SENSORLESS && CORE_IS_XZ
+        #elif CORE_IS_XZ && Z_SPI_SENSORLESS
           || stepperZ.test_stall_status()
         #endif
-      )) { SBI(live_state, X_ENDSTOP); hit = true; }
-      #if ENABLED(X_DUAL_ENDSTOPS)
-	      if (tmc_spi_homing.x && stepperX2.test_stall_status()) { SBI(live_state, X2_ENDSTOP); hit = true; }
-      #endif
+      )) {
+        SBI(live_state, X_ENDSTOP);
+        hit = true;
+      }
     #endif
     #if Y_SPI_SENSORLESS
       if (tmc_spi_homing.y && (stepperY.test_stall_status()
-        #if X_SPI_SENSORLESS && ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX)
+        #if ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX) && X_SPI_SENSORLESS
           || stepperX.test_stall_status()
-        #elif Z_SPI_SENSORLESS && CORE_IS_YZ
+        #elif CORE_IS_YZ && Z_SPI_SENSORLESS
           || stepperZ.test_stall_status()
         #endif
-      )) { SBI(live_state, Y_ENDSTOP); hit = true; }
-      #if ENABLED(Y_DUAL_ENDSTOPS)
-	      if (tmc_spi_homing.y && stepperY2.test_stall_status()) { SBI(live_state, Y2_ENDSTOP); hit = true; }
-      #endif
+      )) {
+        SBI(live_state, Y_ENDSTOP);
+        hit = true;
+      }
     #endif
     #if Z_SPI_SENSORLESS
       if (tmc_spi_homing.z && (stepperZ.test_stall_status()
-        #if X_SPI_SENSORLESS && CORE_IS_XZ
+        #if CORE_IS_XZ && X_SPI_SENSORLESS
           || stepperX.test_stall_status()
-        #elif Y_SPI_SENSORLESS && CORE_IS_YZ
+        #elif CORE_IS_YZ && Y_SPI_SENSORLESS
           || stepperY.test_stall_status()
         #endif
-      )) { SBI(live_state, Z_ENDSTOP); hit = true; }
+      )) {
+        SBI(live_state, Z_ENDSTOP);
+        hit = true;
+      }
     #endif
     #if I_SPI_SENSORLESS
-      if (tmc_spi_homing.i && stepperI.test_stall_status()) { SBI(live_state, I_ENDSTOP); hit = true; }
+      if (tmc_spi_homing.i && stepperI.test_stall_status()) {
+        SBI(live_state, I_ENDSTOP);
+        hit = true;
+      }
     #endif
     #if J_SPI_SENSORLESS
-      if (tmc_spi_homing.j && stepperJ.test_stall_status()) { SBI(live_state, J_ENDSTOP); hit = true; }
+      if (tmc_spi_homing.j && stepperJ.test_stall_status()) {
+        SBI(live_state, J_ENDSTOP);
+        hit = true;
+      }
     #endif
     #if K_SPI_SENSORLESS
-      if (tmc_spi_homing.k && stepperK.test_stall_status()) { SBI(live_state, K_ENDSTOP); hit = true; }
+      if (tmc_spi_homing.k && stepperK.test_stall_status()) {
+        SBI(live_state, K_ENDSTOP);
+        hit = true;
+      }
     #endif
     #if U_SPI_SENSORLESS
-      if (tmc_spi_homing.u && stepperU.test_stall_status()) { SBI(live_state, U_ENDSTOP); hit = true; }
+      if (tmc_spi_homing.u && stepperU.test_stall_status()) {
+        SBI(live_state, U_ENDSTOP);
+        hit = true;
+      }
     #endif
     #if V_SPI_SENSORLESS
-      if (tmc_spi_homing.v && stepperV.test_stall_status()) { SBI(live_state, V_ENDSTOP); hit = true; }
+      if (tmc_spi_homing.v && stepperV.test_stall_status()) {
+        SBI(live_state, V_ENDSTOP);
+        hit = true;
+      }
     #endif
     #if W_SPI_SENSORLESS
-      if (tmc_spi_homing.w && stepperW.test_stall_status()) { SBI(live_state, W_ENDSTOP); hit = true; }
+      if (tmc_spi_homing.w && stepperW.test_stall_status()) {
+        SBI(live_state, W_ENDSTOP);
+        hit = true;
+      }
     #endif
 
     if (TERN0(ENDSTOP_INTERRUPTS_FEATURE, hit)) update();
@@ -1387,13 +1414,7 @@ void Endstops::update() {
 
   void Endstops::clear_endstop_state() {
     TERN_(X_SPI_SENSORLESS, CBI(live_state, X_ENDSTOP));
-    #if BOTH(X_SPI_SENSORLESS, X_DUAL_ENDSTOPS)
-      CBI(live_state, X2_ENDSTOP);
-    #endif
     TERN_(Y_SPI_SENSORLESS, CBI(live_state, Y_ENDSTOP));
-    #if BOTH(Y_SPI_SENSORLESS, Y_DUAL_ENDSTOPS)
-      CBI(live_state, Y2_ENDSTOP);
-    #endif
     TERN_(Z_SPI_SENSORLESS, CBI(live_state, Z_ENDSTOP));
     TERN_(I_SPI_SENSORLESS, CBI(live_state, I_ENDSTOP));
     TERN_(J_SPI_SENSORLESS, CBI(live_state, J_ENDSTOP));

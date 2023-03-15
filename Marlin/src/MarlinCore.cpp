@@ -168,8 +168,6 @@
   #include "module/polargraph.h"
 #elif IS_SCARA
   #include "module/scara.h"
-#elif ENABLED(POLAR)
-  #include "module/polar.h"
 #endif
 
 #if HAS_LEVELING
@@ -234,7 +232,7 @@
   #include "feature/password/password.h"
 #endif
 
-#if DGUS_LCD_UI_MKS
+#if ENABLED(DGUS_LCD_UI_MKS)
   #include "lcd/extui/dgus/DGUSScreenHandler.h"
 #endif
 
@@ -349,7 +347,7 @@ void startOrResumeJob() {
     TERN_(GCODE_REPEAT_MARKERS, repeat.reset());
     TERN_(CANCEL_OBJECTS, cancelable.reset());
     TERN_(LCD_SHOW_E_TOTAL, e_move_accumulator = 0);
-    #if ENABLED(SET_REMAINING_TIME)
+    #if BOTH(LCD_SET_PROGRESS_MANUALLY, USE_M73_REMAINING_TIME)
       ui.reset_remaining_time();
     #endif
   }
@@ -448,7 +446,7 @@ inline void manage_inactivity(const bool no_stepper_sleep=false) {
           TERN_(DISABLE_INACTIVE_U, stepper.disable_axis(U_AXIS));
           TERN_(DISABLE_INACTIVE_V, stepper.disable_axis(V_AXIS));
           TERN_(DISABLE_INACTIVE_W, stepper.disable_axis(W_AXIS));
-          TERN_(DISABLE_INACTIVE_EXTRUDER, stepper.disable_e_steppers());
+          TERN_(DISABLE_INACTIVE_E, stepper.disable_e_steppers());
 
           TERN_(AUTO_BED_LEVELING_UBL, bedlevel.steppers_were_disabled());
         }
@@ -490,7 +488,7 @@ inline void manage_inactivity(const bool no_stepper_sleep=false) {
     }
   #endif
 
-  #if ENABLED(FREEZE_FEATURE)
+  #if HAS_FREEZE_PIN
     stepper.frozen = READ(FREEZE_PIN) == FREEZE_STATE;
   #endif
 
@@ -669,7 +667,7 @@ inline void manage_inactivity(const bool no_stepper_sleep=false) {
       && ELAPSED(ms, gcode.previous_move_ms + SEC_TO_MS(EXTRUDER_RUNOUT_SECONDS))
       && !planner.has_blocks_queued()
     ) {
-      #if HAS_SWITCHING_EXTRUDER
+      #if ENABLED(SWITCHING_EXTRUDER)
         bool oldstatus;
         switch (active_extruder) {
           default: oldstatus = stepper.AXIS_IS_ENABLED(E_AXIS, 0); stepper.ENABLE_EXTRUDER(0); break;
@@ -683,7 +681,7 @@ inline void manage_inactivity(const bool no_stepper_sleep=false) {
             #endif // E_STEPPERS > 2
           #endif // E_STEPPERS > 1
         }
-      #else // !HAS_SWITCHING_EXTRUDER
+      #else // !SWITCHING_EXTRUDER
         bool oldstatus;
         switch (active_extruder) {
           default:
@@ -699,7 +697,7 @@ inline void manage_inactivity(const bool no_stepper_sleep=false) {
       planner.set_e_position_mm(olde);
       planner.synchronize();
 
-      #if HAS_SWITCHING_EXTRUDER
+      #if ENABLED(SWITCHING_EXTRUDER)
         switch (active_extruder) {
           default: if (oldstatus) stepper.ENABLE_EXTRUDER(0); else stepper.DISABLE_EXTRUDER(0); break;
           #if E_STEPPERS > 1
@@ -709,12 +707,12 @@ inline void manage_inactivity(const bool no_stepper_sleep=false) {
             #endif // E_STEPPERS > 2
           #endif // E_STEPPERS > 1
         }
-      #else // !HAS_SWITCHING_EXTRUDER
+      #else // !SWITCHING_EXTRUDER
         switch (active_extruder) {
           #define _CASE_RESTORE(N) case N: if (oldstatus) stepper.ENABLE_EXTRUDER(N); else stepper.DISABLE_EXTRUDER(N); break;
           REPEAT(E_STEPPERS, _CASE_RESTORE);
         }
-      #endif // !HAS_SWITCHING_EXTRUDER
+      #endif // !SWITCHING_EXTRUDER
 
       gcode.reset_stepper_timeout(ms);
     }

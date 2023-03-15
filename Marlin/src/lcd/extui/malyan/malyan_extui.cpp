@@ -111,8 +111,8 @@ namespace ExtUI {
         case PID_STARTED:
           set_lcd_error(GET_TEXT_F(MSG_PID_AUTOTUNE));
           break;
-        case PID_BAD_HEATER_ID:
-          set_lcd_error(GET_TEXT_F(MSG_PID_BAD_HEATER_ID));
+        case PID_BAD_EXTRUDER_NUM:
+          set_lcd_error(GET_TEXT_F(MSG_PID_BAD_EXTRUDER_NUM));
           break;
         case PID_TEMP_TOO_HIGH:
           set_lcd_error(GET_TEXT_F(MSG_PID_TEMP_TOO_HIGH));
@@ -158,12 +158,7 @@ namespace ExtUI {
   #endif
 
   #if ENABLED(POWER_LOSS_RECOVERY)
-    void onPowerLoss() {
-      // Called when power-loss state is detected
-    }
-    void onPowerLossResume() {
-      // Called on resume from power-loss
-    }
+    void onPowerLossResume() {}
   #endif
 
   void onSteppersDisabled() {}

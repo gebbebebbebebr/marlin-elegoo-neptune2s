@@ -1,7 +1,7 @@
 #
 # preprocessor.py
 #
-import subprocess
+import subprocess,re
 
 nocache = 1
 verbose = 0

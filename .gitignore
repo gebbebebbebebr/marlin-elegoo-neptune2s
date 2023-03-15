@@ -21,8 +21,7 @@
 
 # Generated files
 _Version.h
-bdf2u8g.exe
-genpages.exe
+bdf2u8g
 marlin_config.json
 mczip.h
 *.gen
@@ -148,7 +147,6 @@ vc-fileutils.settings
 imgui.ini
 eeprom.dat
 spi_flash.bin
-fs.img
 
 #cmake
 CMakeLists.txt

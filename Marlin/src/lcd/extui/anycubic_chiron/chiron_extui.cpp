@@ -120,9 +120,6 @@ namespace ExtUI {
   #endif
 
   #if ENABLED(POWER_LOSS_RECOVERY)
-    void onPowerLoss() {
-      // Called when power-loss state is detected
-    }
     // Called on resume from power-loss
     void onPowerLossResume() { Chiron.PowerLossRecovery(); }
   #endif

@@ -300,7 +300,7 @@ void lv_fill_rect(lv_coord_t x1, lv_coord_t y1, lv_coord_t x2, lv_coord_t y2, lv
 
 #define TICK_CYCLE 1
 
-uint16_t getTickDiff(uint16_t curTick, uint16_t lastTick) {
+unsigned int getTickDiff(unsigned int curTick, unsigned int lastTick) {
   return TICK_CYCLE * (lastTick <= curTick ? (curTick - lastTick) : (0xFFFFFFFF - lastTick + curTick));
 }
 
@@ -482,14 +482,14 @@ void lv_encoder_pin_init() {
   #if BUTTON_EXISTS(UP)
     SET_INPUT(BTN_UP);
   #endif
-  #if BUTTON_EXISTS(DOWN)
-    SET_INPUT(BTN_DOWN);
+  #if BUTTON_EXISTS(DWN)
+    SET_INPUT(BTN_DWN);
   #endif
-  #if BUTTON_EXISTS(LEFT)
-    SET_INPUT(BTN_LEFT);
+  #if BUTTON_EXISTS(LFT)
+    SET_INPUT(BTN_LFT);
   #endif
-  #if BUTTON_EXISTS(RIGHT)
-    SET_INPUT(BTN_RIGHT);
+  #if BUTTON_EXISTS(RT)
+    SET_INPUT(BTN_RT);
   #endif
 }
 

@@ -44,11 +44,9 @@ uint16_t delta(uint16_t a, uint16_t b) { return a > b ? a - b : b - a; }
 #endif
 
 void XPT2046::Init() {
-  #if DISABLED(TOUCH_BUTTONS_HW_SPI)
-    SET_INPUT(TOUCH_MISO_PIN);
-    SET_OUTPUT(TOUCH_MOSI_PIN);
-    SET_OUTPUT(TOUCH_SCK_PIN);
-  #endif
+  SET_INPUT(TOUCH_MISO_PIN);
+  SET_OUTPUT(TOUCH_MOSI_PIN);
+  SET_OUTPUT(TOUCH_SCK_PIN);
   OUT_WRITE(TOUCH_CS_PIN, HIGH);
 
   #if PIN_EXISTS(TOUCH_INT)

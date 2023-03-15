@@ -211,7 +211,7 @@ bool load_filament(const_float_t slow_load_length/*=0*/, const_float_t fast_load
     while (wait_for_user) {
       impatient_beep(max_beep_count);
       #if BOTH(FILAMENT_CHANGE_RESUME_ON_INSERT, FILAMENT_RUNOUT_SENSOR)
-        #if MULTI_FILAMENT_SENSOR
+        #if ENABLED(MULTI_FILAMENT_SENSOR)
           #define _CASE_INSERTED(N) case N-1: if (READ(FIL_RUNOUT##N##_PIN) != FIL_RUNOUT##N##_STATE) wait_for_user = false; break;
           switch (active_extruder) {
             REPEAT_1(NUM_RUNOUT_SENSORS, _CASE_INSERTED)
@@ -410,6 +410,7 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
   #endif
 
   TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_open(PROMPT_INFO, F("Pause"), FPSTR(DISMISS_STR)));
+  TERN_(DWIN_LCD_PROUI, DWIN_Print_Pause());
 
   // Indicate that the printer is paused
   ++did_pause_print;
@@ -460,7 +461,6 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
 
   // If axes don't need to home then the nozzle can park
   if (do_park) nozzle.park(0, park_point); // Park the nozzle by doing a Minimum Z Raise followed by an XY Move
-  TERN_(DWIN_LCD_PROUI, if (!do_park) ui.set_status(GET_TEXT_F(MSG_PARK_FAILED)));
 
   #if ENABLED(DUAL_X_CARRIAGE)
     const int8_t saved_ext        = active_extruder;
@@ -472,7 +472,9 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
   if (unload_length)
     unload_filament(unload_length, show_lcd, PAUSE_MODE_CHANGE_FILAMENT);
 
-  TERN_(DUAL_X_CARRIAGE, set_duplication_enabled(saved_ext_dup_mode, saved_ext));
+  #if ENABLED(DUAL_X_CARRIAGE)
+    set_duplication_enabled(saved_ext_dup_mode, saved_ext);
+  #endif
 
   // Disable the Extruder for manual change
   disable_active_extruder();
@@ -578,7 +580,9 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
     }
     idle_no_sleep();
   }
-  TERN_(DUAL_X_CARRIAGE, set_duplication_enabled(saved_ext_dup_mode, saved_ext));
+  #if ENABLED(DUAL_X_CARRIAGE)
+    set_duplication_enabled(saved_ext_dup_mode, saved_ext);
+  #endif
 }
 
 /**
@@ -710,8 +714,13 @@ void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_
 
   TERN_(HAS_FILAMENT_SENSOR, runout.reset());
 
-  ui.reset_status();
-  ui.return_to_status();
+  #if ENABLED(DWIN_LCD_PROUI)
+    DWIN_Print_Resume();
+    HMI_ReturnScreen();
+  #else
+    ui.reset_status();
+    ui.return_to_status();
+  #endif
 }
 
 #endif // ADVANCED_PAUSE_FEATURE

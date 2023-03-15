@@ -65,7 +65,6 @@ enum TouchControlType : uint16_t {
   FLOWRATE,
   UBL,
   MOVE_AXIS,
-  STOP,
   BUTTON,
 };
 
@@ -104,7 +103,7 @@ class Touch {
     static touch_control_t *current_control;
     static uint16_t controls_count;
 
-    static millis_t next_touch_ms, time_to_hold, repeat_delay, touch_time;
+    static millis_t last_touch_ms, time_to_hold, repeat_delay, touch_time;
     static TouchControlType touch_control_type;
 
     static bool get_point(int16_t *x, int16_t *y);

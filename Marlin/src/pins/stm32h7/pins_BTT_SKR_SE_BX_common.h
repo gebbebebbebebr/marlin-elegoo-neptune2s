@@ -21,7 +21,9 @@
  */
 #pragma once
 
-#include "env_validate.h"
+#if NOT_TARGET(STM32H7)
+  #error "Oops! Select an STM32H7 board in 'Tools > Board.'"
+#endif
 
 #define DEFAULT_MACHINE_NAME "Biqu BX"
 

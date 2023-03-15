@@ -80,13 +80,6 @@
   #include "../../../feature/powerloss.h"
 #endif
 
-#if HAS_TRINAMIC_CONFIG
-  #include "../../../module/stepper/trinamic.h"
-
-  #define TMC_MIN_CURRENT 400
-  #define TMC_MAX_CURRENT 1500
-#endif
-
 #define MACHINE_SIZE STRINGIFY(X_BED_SIZE) "x" STRINGIFY(Y_BED_SIZE) "x" STRINGIFY(Z_MAX_POS)
 
 #define DWIN_FONT_MENU font8x16
@@ -740,7 +733,7 @@ void CrealityDWINClass::Draw_Print_Screen() {
   Update_Status_Bar(true);
   Draw_Print_ProgressBar();
   Draw_Print_ProgressElapsed();
-  TERN_(SET_REMAINING_TIME, Draw_Print_ProgressRemain());
+  TERN_(USE_M73_REMAINING_TIME, Draw_Print_ProgressRemain());
   Draw_Print_Filename(true);
 }
 
@@ -766,7 +759,7 @@ void CrealityDWINClass::Draw_Print_ProgressBar() {
   DWIN_Draw_String(false, DWIN_FONT_MENU, GetColor(eeprom_settings.progress_percent, Percent_Color), Color_Bg_Black, 133, 133, F("%"));
 }
 
-#if ENABLED(SET_REMAINING_TIME)
+#if ENABLED(USE_M73_REMAINING_TIME)
 
   void CrealityDWINClass::Draw_Print_ProgressRemain() {
     uint16_t remainingtime = ui.get_remaining_time();
@@ -1213,7 +1206,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
                 if (thermalManager.temp_hotend[0].target < thermalManager.extrude_min_temp)
                   Popup_Handler(ETemp);
                 else {
-                  if (thermalManager.temp_hotend[0].is_below_target(2)) {
+                  if (thermalManager.temp_hotend[0].is_below_target(-2)) {
                     Popup_Handler(Heating);
                     thermalManager.wait_for_hotend(0);
                   }
@@ -1356,7 +1349,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
                 Popup_Handler(ETemp);
               }
               else {
-                if (thermalManager.temp_hotend[0].is_below_target(2)) {
+                if (thermalManager.temp_hotend[0].is_below_target(-2)) {
                   Popup_Handler(Heating);
                   thermalManager.wait_for_hotend(0);
                   Redraw_Menu();
@@ -1743,7 +1736,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
               if (thermalManager.temp_hotend[0].target < thermalManager.extrude_min_temp)
                 Popup_Handler(ETemp);
               else {
-                if (thermalManager.temp_hotend[0].is_below_target(2)) {
+                if (thermalManager.temp_hotend[0].is_below_target(-2)) {
                   Popup_Handler(Heating);
                   thermalManager.wait_for_hotend(0);
                 }
@@ -1762,7 +1755,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
                 Popup_Handler(ETemp);
               }
               else {
-                if (thermalManager.temp_hotend[0].is_below_target(2)) {
+                if (thermalManager.temp_hotend[0].is_below_target(-2)) {
                   Popup_Handler(Heating);
                   thermalManager.wait_for_hotend(0);
                 }
@@ -1780,7 +1773,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
               if (thermalManager.temp_hotend[0].target < thermalManager.extrude_min_temp)
                 Popup_Handler(ETemp);
               else {
-                if (thermalManager.temp_hotend[0].is_below_target(2)) {
+                if (thermalManager.temp_hotend[0].is_below_target(-2)) {
                   Popup_Handler(Heating);
                   thermalManager.wait_for_hotend(0);
                 }
@@ -2147,7 +2140,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case HOTENDPID_KP:
             if (draw) {
               Draw_Menu_Item(row, ICON_Version, F("Kp Value"));
-              Draw_Float(thermalManager.temp_hotend[0].pid.p(), row, false, 100);
+              Draw_Float(thermalManager.temp_hotend[0].pid.Kp, row, false, 100);
             }
             else
               Modify_Value(thermalManager.temp_hotend[0].pid.Kp, 0, 5000, 100, thermalManager.updatePID);
@@ -2155,7 +2148,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case HOTENDPID_KI:
             if (draw) {
               Draw_Menu_Item(row, ICON_Version, F("Ki Value"));
-              Draw_Float(thermalManager.temp_hotend[0].pid.i(), row, false, 100);
+              Draw_Float(unscalePID_i(thermalManager.temp_hotend[0].pid.Ki), row, false, 100);
             }
             else
               Modify_Value(thermalManager.temp_hotend[0].pid.Ki, 0, 5000, 100, thermalManager.updatePID);
@@ -2163,7 +2156,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case HOTENDPID_KD:
             if (draw) {
               Draw_Menu_Item(row, ICON_Version, F("Kd Value"));
-              Draw_Float(thermalManager.temp_hotend[0].pid.d(), row, false, 100);
+              Draw_Float(unscalePID_d(thermalManager.temp_hotend[0].pid.Kd), row, false, 100);
             }
             else
               Modify_Value(thermalManager.temp_hotend[0].pid.Kd, 0, 5000, 100, thermalManager.updatePID);
@@ -2214,7 +2207,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case BEDPID_KP:
             if (draw) {
               Draw_Menu_Item(row, ICON_Version, F("Kp Value"));
-              Draw_Float(thermalManager.temp_bed.pid.p(), row, false, 100);
+              Draw_Float(thermalManager.temp_bed.pid.Kp, row, false, 100);
             }
             else {
               Modify_Value(thermalManager.temp_bed.pid.Kp, 0, 5000, 100, thermalManager.updatePID);
@@ -2223,7 +2216,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case BEDPID_KI:
             if (draw) {
               Draw_Menu_Item(row, ICON_Version, F("Ki Value"));
-              Draw_Float(thermalManager.temp_bed.pid.i(), row, false, 100);
+              Draw_Float(unscalePID_i(thermalManager.temp_bed.pid.Ki), row, false, 100);
             }
             else
               Modify_Value(thermalManager.temp_bed.pid.Ki, 0, 5000, 100, thermalManager.updatePID);
@@ -2231,7 +2224,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case BEDPID_KD:
             if (draw) {
               Draw_Menu_Item(row, ICON_Version, F("Kd Value"));
-              Draw_Float(thermalManager.temp_bed.pid.d(), row, false, 100);
+              Draw_Float(unscalePID_d(thermalManager.temp_bed.pid.Kd), row, false, 100);
             }
             else
               Modify_Value(thermalManager.temp_bed.pid.Kd, 0, 5000, 100, thermalManager.updatePID);
@@ -2302,7 +2295,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
               Draw_Float(planner.flow_percentage[0], row, false, 1);
             }
             else
-              Modify_Value(planner.flow_percentage[0], MIN_FLOW_RATE, MAX_FLOW_RATE, 1, []{ planner.refresh_e_factor(0); });
+              Modify_Value(planner.flow_percentage[0], MIN_FLOW_RATE, MAX_FLOW_RATE, 1);
             break;
         #endif
       }
@@ -2472,35 +2465,35 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case JERK_X:
             if (draw) {
               Draw_Menu_Item(row, ICON_MaxSpeedJerkX, F("X Axis"));
-              Draw_Float(planner.max_jerk.x, row, false, 10);
+              Draw_Float(planner.max_jerk[X_AXIS], row, false, 10);
             }
             else
-              Modify_Value(planner.max_jerk.x, 0, default_max_jerk[X_AXIS] * 2, 10);
+              Modify_Value(planner.max_jerk[X_AXIS], 0, default_max_jerk[X_AXIS] * 2, 10);
             break;
           case JERK_Y:
             if (draw) {
               Draw_Menu_Item(row, ICON_MaxSpeedJerkY, F("Y Axis"));
-              Draw_Float(planner.max_jerk.y, row, false, 10);
+              Draw_Float(planner.max_jerk[Y_AXIS], row, false, 10);
             }
             else
-              Modify_Value(planner.max_jerk.y, 0, default_max_jerk[Y_AXIS] * 2, 10);
+              Modify_Value(planner.max_jerk[Y_AXIS], 0, default_max_jerk[Y_AXIS] * 2, 10);
             break;
           case JERK_Z:
             if (draw) {
               Draw_Menu_Item(row, ICON_MaxSpeedJerkZ, F("Z Axis"));
-              Draw_Float(planner.max_jerk.z, row, false, 10);
+              Draw_Float(planner.max_jerk[Z_AXIS], row, false, 10);
             }
             else
-              Modify_Value(planner.max_jerk.z, 0, default_max_jerk[Z_AXIS] * 2, 10);
+              Modify_Value(planner.max_jerk[Z_AXIS], 0, default_max_jerk[Z_AXIS] * 2, 10);
             break;
           #if HAS_HOTEND
             case JERK_E:
               if (draw) {
                 Draw_Menu_Item(row, ICON_MaxSpeedJerkE, F("Extruder"));
-                Draw_Float(planner.max_jerk.e, row, false, 10);
+                Draw_Float(planner.max_jerk[E_AXIS], row, false, 10);
               }
               else
-                Modify_Value(planner.max_jerk.e, 0, default_max_jerk[E_AXIS] * 2, 10);
+                Modify_Value(planner.max_jerk[E_AXIS], 0, default_max_jerk[E_AXIS] * 2, 10);
               break;
           #endif
         }
@@ -2727,8 +2720,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
       #define ADVANCED_BACK 0
       #define ADVANCED_BEEPER (ADVANCED_BACK + ENABLED(SOUND_MENU_ITEM))
       #define ADVANCED_PROBE (ADVANCED_BEEPER + ENABLED(HAS_BED_PROBE))
-      #define ADVANCED_TMC (ADVANCED_PROBE + ENABLED(HAS_TRINAMIC_CONFIG))
-      #define ADVANCED_CORNER (ADVANCED_TMC + 1)
+      #define ADVANCED_CORNER (ADVANCED_PROBE + 1)
       #define ADVANCED_LA (ADVANCED_CORNER + ENABLED(LIN_ADVANCE))
       #define ADVANCED_LOAD (ADVANCED_LA + ENABLED(ADVANCED_PAUSE_FEATURE))
       #define ADVANCED_UNLOAD (ADVANCED_LOAD + ENABLED(ADVANCED_PAUSE_FEATURE))
@@ -2768,15 +2760,6 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
             break;
         #endif
 
-        #if HAS_TRINAMIC_CONFIG
-          case ADVANCED_TMC:
-            if (draw)
-              Draw_Menu_Item(row, ICON_Motion, F("TMC Drivers"), nullptr, true);
-            else
-              Draw_Menu(TMCMenu);
-            break;
-        #endif
-
         case ADVANCED_CORNER:
           if (draw) {
             Draw_Menu_Item(row, ICON_MaxAccelerated, F("Bed Screw Inset"));
@@ -2789,7 +2772,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
         #if ENABLED(LIN_ADVANCE)
           case ADVANCED_LA:
             if (draw) {
-              Draw_Menu_Item(row, ICON_MaxAccelerated, F("Lin Advance K"));
+              Draw_Menu_Item(row, ICON_MaxAccelerated, F("Lin Advance Kp"));
               Draw_Float(planner.extruder_advance_K[0], row, false, 100);
             }
             else
@@ -2922,93 +2905,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
               break;
         }
         break;
-    #endif  // HAS_PROBE_MENU
-
-    #if HAS_TRINAMIC_CONFIG
-      case TMCMenu:
-
-        #define TMC_BACK 0
-        #define TMC_STEPPER_CURRENT_X (TMC_BACK + AXIS_IS_TMC(X))
-        #define TMC_STEPPER_CURRENT_Y (TMC_STEPPER_CURRENT_X + AXIS_IS_TMC(Y))
-        #define TMC_STEPPER_CURRENT_Z (TMC_STEPPER_CURRENT_Y + AXIS_IS_TMC(Z))
-        #define TMC_STEPPER_CURRENT_E (TMC_STEPPER_CURRENT_Z + AXIS_IS_TMC(E0))
-        #define TMC_TOTAL TMC_STEPPER_CURRENT_E
-
-        switch (item) {
-
-          case TMC_BACK:
-            if (draw)
-              Draw_Menu_Item(row, ICON_Back, F("Back"));
-            else
-              Draw_Menu(Advanced, ADVANCED_TMC);
-            break;
-
-          #if AXIS_IS_TMC(X)
-            case TMC_STEPPER_CURRENT_X:
-
-              static float stepper_current_x;
-
-              if (draw) {
-                Draw_Menu_Item(row, ICON_StepX, F("Stepper X current"));
-                stepper_current_x = stepperX.getMilliamps();
-                Draw_Float(stepper_current_x, row, false, 1);
-              }
-              else {
-                Modify_Value(stepper_current_x, TMC_MIN_CURRENT, TMC_MAX_CURRENT, 1, []{ stepperX.rms_current(stepper_current_x); });
-              }
-              break;
-          #endif
-
-          #if AXIS_IS_TMC(Y)
-            case TMC_STEPPER_CURRENT_Y:
-
-              static float stepper_current_y;
-
-              if (draw) {
-                Draw_Menu_Item(row, ICON_StepY, F("Stepper Y current"));
-                stepper_current_y = stepperY.getMilliamps();
-                Draw_Float(stepper_current_y, row, false, 1);
-              }
-              else {
-                Modify_Value(stepper_current_y, TMC_MIN_CURRENT, TMC_MAX_CURRENT, 1, []{ stepperY.rms_current(stepper_current_y); });
-              }
-              break;
-          #endif
-
-          #if AXIS_IS_TMC(Z)
-            case TMC_STEPPER_CURRENT_Z:
-
-              static float stepper_current_z;
-
-              if (draw) {
-                Draw_Menu_Item(row, ICON_StepZ, F("Stepper Z current"));
-                stepper_current_z = stepperZ.getMilliamps();
-                Draw_Float(stepper_current_z, row, false, 1);
-              }
-              else {
-                Modify_Value(stepper_current_z, TMC_MIN_CURRENT, TMC_MAX_CURRENT, 1, []{ stepperZ.rms_current(stepper_current_z); });
-              }
-              break;
-          #endif
-
-          #if AXIS_IS_TMC(E0)
-            case TMC_STEPPER_CURRENT_E:
-
-              static float stepper_current_e;
-
-              if (draw) {
-                Draw_Menu_Item(row, ICON_StepE, F("Stepper E current"));
-                stepper_current_e = stepperE0.getMilliamps();
-                Draw_Float(stepper_current_e, row, false, 1);
-              }
-              else {
-                Modify_Value(stepper_current_e, TMC_MIN_CURRENT, TMC_MAX_CURRENT, 1, []{ stepperE0.rms_current(stepper_current_e); });
-              }
-              break;
-          #endif
-        };
-        break;
-    #endif // HAS_TRINAMIC_CONFIG
+    #endif
 
     case InfoMain:
     case Info:
@@ -3740,7 +3637,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
               Draw_Float(planner.flow_percentage[0], row, false, 1);
             }
             else
-              Modify_Value(planner.flow_percentage[0], MIN_FLOW_RATE, MAX_FLOW_RATE, 1, []{ planner.refresh_e_factor(0); });
+              Modify_Value(planner.flow_percentage[0], MIN_FLOW_RATE, MAX_FLOW_RATE, 1);
             break;
           case TUNE_HOTEND:
             if (draw) {
@@ -3982,10 +3879,7 @@ FSTR_P CrealityDWINClass::Get_Menu_Title(uint8_t menu) {
     case Visual:            return F("Visual Settings");
     case Advanced:          return F("Advanced Settings");
     #if HAS_BED_PROBE
-      case ProbeMenu:       return F("Bed Probe");
-    #endif
-    #if HAS_TRINAMIC_CONFIG
-      case TMCMenu:         return F("TMC Drivers");
+      case ProbeMenu:       return F("Probe Menu");
     #endif
     case ColorSettings:     return F("UI Color Settings");
     case Info:              return F("Info");
@@ -4054,9 +3948,6 @@ uint8_t CrealityDWINClass::Get_Menu_Size(uint8_t menu) {
     case Advanced:          return ADVANCED_TOTAL;
     #if HAS_BED_PROBE
       case ProbeMenu:       return PROBE_TOTAL;
-    #endif
-    #if HAS_TRINAMIC_CONFIG
-      case TMCMenu:         return TMC_TOTAL;
     #endif
     case Info:              return INFO_TOTAL;
     case InfoMain:          return INFO_TOTAL;
@@ -4226,10 +4117,13 @@ void CrealityDWINClass::Value_Control() {
         case LevelManual: mesh_conf.manual_mesh_move(selection == LEVELING_M_OFFSET); break;
       #endif
     }
+    if (valuepointer == &planner.flow_percentage[0])
+      planner.refresh_e_factor(0);
     if (funcpointer) funcpointer();
     return;
   }
-  LIMIT(tempvalue, valuemin * valueunit, valuemax * valueunit);
+  NOLESS(tempvalue, (valuemin * valueunit));
+  NOMORE(tempvalue, (valuemax * valueunit));
   Draw_Float(tempvalue / valueunit, selection - scrollpos, true, valueunit);
   DWIN_UpdateLCD();
   if (active_menu == Move && livemove) {
@@ -4271,7 +4165,8 @@ void CrealityDWINClass::Option_Control() {
     DWIN_UpdateLCD();
     return;
   }
-  LIMIT(tempvalue, valuemin, valuemax);
+  NOLESS(tempvalue, valuemin);
+  NOMORE(tempvalue, valuemax);
   Draw_Option(tempvalue, static_cast<const char * const *>(valuepointer), selection - scrollpos, true);
   DWIN_UpdateLCD();
 }
@@ -4503,7 +4398,7 @@ void CrealityDWINClass::Popup_Control() {
             if (thermalManager.temp_hotend[0].target < thermalManager.extrude_min_temp)
               Popup_Handler(ETemp);
             else {
-              if (thermalManager.temp_hotend[0].is_below_target(2)) {
+              if (thermalManager.temp_hotend[0].is_below_target(-2)) {
                 Popup_Handler(Heating);
                 thermalManager.wait_for_hotend(0);
               }
@@ -4661,7 +4556,7 @@ void CrealityDWINClass::Start_Print(bool sd) {
     if (sd) {
       #if ENABLED(POWER_LOSS_RECOVERY)
         if (recovery.valid()) {
-          MediaFile *diveDir = nullptr;
+          SdFile *diveDir = nullptr;
           const char * const fname = card.diveToFile(true, diveDir, recovery.info.sd_filename);
           card.selectFileByName(fname);
         }
@@ -4670,8 +4565,8 @@ void CrealityDWINClass::Start_Print(bool sd) {
     }
     else
       strcpy_P(filename, PSTR("Host Print"));
-    TERN_(SET_PROGRESS_PERCENT, ui.set_progress(0));
-    TERN_(SET_REMAINING_TIME, ui.set_remaining_time(0));
+    TERN_(LCD_SET_PROGRESS_MANUALLY, ui.set_progress(0));
+    TERN_(USE_M73_REMAINING_TIME, ui.set_remaining_time(0));
     Draw_Print_Screen();
   }
 }
@@ -4680,8 +4575,8 @@ void CrealityDWINClass::Stop_Print() {
   printing = false;
   sdprint = false;
   thermalManager.cooldown();
-  TERN_(SET_PROGRESS_PERCENT, ui.set_progress(100 * (PROGRESS_SCALE)));
-  TERN_(SET_REMAINING_TIME, ui.set_remaining_time(0));
+  TERN_(LCD_SET_PROGRESS_MANUALLY, ui.set_progress(100 * (PROGRESS_SCALE)));
+  TERN_(USE_M73_REMAINING_TIME, ui.set_remaining_time(0));
   Draw_Print_confirm();
 }
 
@@ -4758,7 +4653,7 @@ void CrealityDWINClass::Screen_Update() {
     if (process == Print) {
       Draw_Print_ProgressBar();
       Draw_Print_ProgressElapsed();
-      TERN_(SET_REMAINING_TIME, Draw_Print_ProgressRemain());
+      TERN_(USE_M73_REMAINING_TIME, Draw_Print_ProgressRemain());
     }
   }
 

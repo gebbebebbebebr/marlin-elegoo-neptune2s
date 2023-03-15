@@ -24,7 +24,7 @@
 
 #include "../../../../inc/MarlinConfigPre.h"
 
-#if DGUS_LCD_UI_FYSETC
+#if ENABLED(DGUS_LCD_UI_FYSETC)
 
 #include "DGUSDisplayDef.h"
 #include "../DGUSDisplay.h"
@@ -63,7 +63,7 @@ const uint16_t VPList_Main[] PROGMEM = {
   VP_XPos, VP_YPos, VP_ZPos,
   VP_Fan0_Percentage,
   VP_Feedrate_Percentage,
-  #if ENABLED(SET_PROGRESS_PERCENT)
+  #if ENABLED(LCD_SET_PROGRESS_MANUALLY)
     VP_PrintProgress_Percentage,
   #endif
   0x0000

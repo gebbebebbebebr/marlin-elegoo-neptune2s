@@ -1,0 +1,25 @@
+20220616：
+增加调平温度设置项，可以在设置中自定义调平温度。
+
+
+提醒：
+如果出现调平失败或回原点失败问题，请尝试重启电源或在设置中选择恢复出厂设置。恢复出厂设置后会清除调平网格数据，必须重新调平。
+
+调平温度建议:   
+热端温度：0 ℃   （ 为了避免风扇转动以及温度影响调平精度  ）
+热床温度：材料需要的温度＋5 ℃    （避免因热床受热变形影响调平效果）   
+
+
+
+20220616：
+Added the setting item of leveling temperature. You can customize the leveling temperature in the Settings.
+
+
+
+remind:
+If the leveling fails or the homing fails, please try to restart the power or choose to restore the factory settings in the settings. 
+The leveling grid data will be cleared after a factory reset and must be re-leveled.
+
+Leveling Temperature Recommendations:
+Hot end temperature: 0 ℃ (in order to avoid fan rotation and temperature affecting the leveling accuracy)
+Hot bed temperature: the temperature required by the filament +5 °C (to avoid the leveling effect due to the thermal deformation of the hot bed)

@@ -64,6 +64,8 @@
 #define E4_DIAG_PIN                         -1    // Driver7 diag signal is not connected
 
 // Limit Switches for endstops
+#define X_MIN_PIN                           PA14
+#define Y_MIN_PIN                           PA15
 #define Z_MIN_PIN                           PB13
 #define Z_MAX_PIN                           PB12
 
@@ -344,7 +346,7 @@
   #else
 
     #define LCD_PINS_D4              EXP1_05_PIN
-    #if IS_ULTIPANEL
+    #if ENABLED(ULTIPANEL)
       #define LCD_PINS_D5            EXP1_06_PIN
       #define LCD_PINS_D6            EXP1_07_PIN
       #define LCD_PINS_D7            EXP1_08_PIN

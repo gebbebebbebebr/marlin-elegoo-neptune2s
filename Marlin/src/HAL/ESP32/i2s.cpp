@@ -139,38 +139,22 @@ static void IRAM_ATTR i2s_intr_handler_default(void *arg) {
 }
 
 void stepperTask(void *parameter) {
-  uint32_t nextMainISR = 0;
-  #if ENABLED(LIN_ADVANCE)
-    uint32_t nextAdvanceISR = Stepper::LA_ADV_NEVER;
-  #endif
+  uint32_t remaining = 0;
 
-  for (;;) {
+  while (1) {
     xQueueReceive(dma.queue, &dma.current, portMAX_DELAY);
     dma.rw_pos = 0;
 
     while (dma.rw_pos < DMA_SAMPLE_COUNT) {
-      if (!nextMainISR) {
-        Stepper::pulse_phase_isr();
-        nextMainISR = Stepper::block_phase_isr();
-      }
-      #if ENABLED(LIN_ADVANCE)
-        else if (!nextAdvanceISR) {
-          Stepper::advance_isr();
-          nextAdvanceISR = Stepper::la_interval;
-        }
-      #endif
-      else
+      // Fill with the port data post pulse_phase until the next step
+      if (remaining) {
         i2s_push_sample();
-
-      nextMainISR--;
-
-      #if ENABLED(LIN_ADVANCE)
-        if (nextAdvanceISR == Stepper::LA_ADV_NEVER)
-          nextAdvanceISR = Stepper::la_interval;
-
-        if (nextAdvanceISR && nextAdvanceISR != Stepper::LA_ADV_NEVER)
-          nextAdvanceISR--;
-      #endif
+        remaining--;
+      }
+      else {
+        Stepper::pulse_phase_isr();
+        remaining = Stepper::block_phase_isr();
+      }
     }
   }
 }

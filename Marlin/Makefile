@@ -307,22 +307,20 @@ else ifeq ($(HARDWARE_MOTHERBOARD),1154)
 else ifeq ($(HARDWARE_MOTHERBOARD),1155)
 # Tenlog D3 Hero IDEX printer
 else ifeq ($(HARDWARE_MOTHERBOARD),1156)
-# Tenlog D3,5,6 Pro IDEX printers
-else ifeq ($(HARDWARE_MOTHERBOARD),1157)
 # Ramps S 1.2 by Sakul.cz (Power outputs: Hotend0, Hotend1, Fan, Bed)
-else ifeq ($(HARDWARE_MOTHERBOARD),1158)
+else ifeq ($(HARDWARE_MOTHERBOARD),1157)
 # Ramps S 1.2 by Sakul.cz (Power outputs: Hotend0, Hotend1, Hotend2, Bed)
-else ifeq ($(HARDWARE_MOTHERBOARD),1159)
+else ifeq ($(HARDWARE_MOTHERBOARD),1158)
 # Ramps S 1.2 by Sakul.cz (Power outputs: Hotend, Fan0, Fan1, Bed)
-else ifeq ($(HARDWARE_MOTHERBOARD),1160)
+else ifeq ($(HARDWARE_MOTHERBOARD),1159)
 # Longer LK1 PRO / Alfawise U20 Pro (PRO version)
-else ifeq ($(HARDWARE_MOTHERBOARD),1161)
+else ifeq ($(HARDWARE_MOTHERBOARD),1160)
 # Longer LKx PRO / Alfawise Uxx Pro (PRO version)
-else ifeq ($(HARDWARE_MOTHERBOARD),1162)
+else ifeq ($(HARDWARE_MOTHERBOARD),1161)
 # Zonestar zrib V5.3 (Chinese RAMPS replica)
-else ifeq ($(HARDWARE_MOTHERBOARD),1163)
+else ifeq ($(HARDWARE_MOTHERBOARD),1162)
 # Pxmalion Core I3
-else ifeq ($(HARDWARE_MOTHERBOARD),1164)
+else ifeq ($(HARDWARE_MOTHERBOARD),1163)
 
 #
 # RAMBo and derivatives

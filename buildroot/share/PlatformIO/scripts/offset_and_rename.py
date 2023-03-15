@@ -10,7 +10,7 @@
 #
 import pioutil
 if pioutil.is_pio_build():
-    import marlin
+    import sys,marlin
 
     env = marlin.env
     board = env.BoardConfig()
